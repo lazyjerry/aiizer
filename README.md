@@ -1,145 +1,166 @@
-# Humanizer
+# aIizer
 
-A Claude Code skill that removes signs of AI-generated writing from text, making it sound more natural and human.
+一個適用於 Claude Code / Copilot 的技能，用來將人類自然書寫的文字注入典型 AI 寫作風格。基於維基百科「AI 寫作特徵」與 stop-slop 規則集，涵蓋 7 大類共 35 項 AI 寫作子模式。
 
-## Installation
+## 安裝
 
-### Recommended (clone directly into Claude Code skills directory)
+### 建議方式（直接複製到 Claude Code 的 skills 目錄）
 
 ```bash
 mkdir -p ~/.claude/skills
-git clone https://github.com/blader/humanizer.git ~/.claude/skills/humanizer
+git clone https://github.com/lazyjerry/aIizer ~/.claude/skills/aIizer
 ```
 
-### Manual install/update (only the skill file)
+### 從已複製的儲存庫安裝或更新
 
-If you already have this repo cloned (or you downloaded `SKILL.md`), copy the skill file into Claude Code’s skills directory:
+技能現在包含支援檔案與腳本，不建議再只複製單一 SKILL.md。請在儲存庫根目錄執行：
 
 ```bash
-mkdir -p ~/.claude/skills/humanizer
-cp SKILL.md ~/.claude/skills/humanizer/
+./scripts/install-skill.sh
 ```
 
-## Usage
+如需安裝到自訂位置，可傳入目標目錄：
 
-In Claude Code, invoke the skill:
-
-```
-/humanizer
-
-[paste your text here]
+```bash
+./scripts/install-skill.sh ~/.claude/skills/aIizer
 ```
 
-Or ask Claude to humanize text directly:
+### 驗證技能結構
+
+```bash
+./scripts/validate-skill.sh
+```
+
+## 技能結構
+
+- `SKILL.md`：技能入口檔，負責導覽與核心執行原則。
+- `references/process.md`：流程、密度規則、可讀性微調與評分標準。
+- `references/patterns.md`：35 項模式的詳細規則與範例。
+- `examples/complete-example.md`：完整轉換示例與修改摘要示例。
+- `scripts/install-skill.sh`：安裝與更新技能到 Claude Code skills 目錄。
+- `scripts/validate-skill.sh`：檢查技能必要檔案與 SKILL.md 行數限制。
+
+## 用法
+
+在 Claude Code 中呼叫這個技能：
 
 ```
-Please humanize this text: [your text]
+/aIizer
+
+[在此貼上文字]
 ```
 
-## Overview
+或直接請 Claude 將文字注入 AI 風格：
 
-Based on [Wikipedia's "Signs of AI writing"](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) guide, maintained by WikiProject AI Cleanup. This comprehensive guide comes from observations of thousands of instances of AI-generated text.
+```
+請把這段文字轉換成 AI 風格：[你的文字]
+```
 
-The skill also includes a final "obviously AI generated" audit pass and a second rewrite, to catch lingering AI-isms in the first draft.
+本技能以 [Wikipedia 的 Signs of AI writing 指南](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) 與 [stop-slop 規則集](https://github.com/hardikpandya/stop-slop) 為基礎，反向操作其中歸納的 AI 寫作模式，將人類自然書寫主動注入 AI 風格特徵。
 
-### Key Insight from Wikipedia
+轉換流程包含：轉換前確認（原文意圖、目標語氣、AI 風格密度）→ AI 模式注入 → stop-slop 反向評分 → 轉換後確認與調整。
 
-> "LLMs use statistical algorithms to guess what should come next. The result tends toward the most statistically likely result that applies to the widest variety of cases."
+## 可注入的 35 種模式（附注入前/注入後對照範例）
 
-## 25 Patterns Detected (with Before/After Examples)
+### 內容模式
 
-### Content Patterns
+| # | 模式 | 注入前（人類自然寫法） | 注入後（AI 風格） |
+|---|------|------------------------|-------------------|
+| 1 | **意義誇大** | 「該機構於 1989 年成立，負責蒐集區域統計資料」 | 「標誌著此領域演進中的關鍵轉折點」 |
+| 2 | **知名度強調** | 「在《紐約時報》的一次採訪中，她主張……」 | 「她的觀點曾被多家媒體引用，社群影響力廣泛」 |
+| 3 | **表面化的 -ing 分析** | 「建築師表示顏色為呼應當地景觀」 | 「象徵著……反映了……展現了……」 |
+| 4 | **宣傳式語言** | 「這是一座位於 Gonder 地區的城鎮」 | 「坐落於這片令人嘆為觀止的地區之中」 |
+| 5 | **模糊歸因** | 「根據 2019 年某項調查……」 | 「專家認為它扮演關鍵角色」 |
+| 6 | **公式化描述困境** | 「三個 IT 園區開業後交通擁堵加劇」 | 「儘管面臨挑戰……仍持續蓬勃發展」 |
 
-| # | Pattern | Before | After |
-|---|---------|--------|-------|
-| 1 | **Significance inflation** | "marking a pivotal moment in the evolution of..." | "was established in 1989 to collect regional statistics" |
-| 2 | **Notability name-dropping** | "cited in NYT, BBC, FT, and The Hindu" | "In a 2024 NYT interview, she argued..." |
-| 3 | **Superficial -ing analyses** | "symbolizing... reflecting... showcasing..." | Remove or expand with actual sources |
-| 4 | **Promotional language** | "nestled within the breathtaking region" | "is a town in the Gonder region" |
-| 5 | **Vague attributions** | "Experts believe it plays a crucial role" | "according to a 2019 survey by..." |
-| 6 | **Formulaic challenges** | "Despite challenges... continues to thrive" | Specific facts about actual challenges |
+### 語言模式
 
-### Language Patterns
+| # | 模式 | 注入前（人類自然寫法） | 注入後（AI 風格） |
+|---|------|------------------------|-------------------|
+| 7 | **AI 慣用詞彙** | 「也……仍然常見」 | 「此外……見證了……樣貌……展現出……」 |
+| 8 | **刻意避開 be 動詞** | 「是……、有……」 | 「扮演……角色、具備……特色、擁有……優勢」 |
+| 9 | **否定式排比** | 直接陳述重點 | 「這不只是 X，而是 Y」 |
+| 10 | **三段式法則濫用** | 使用自然數量的列舉 | 「創新、啟發與洞見」 |
+| 11 | **同義詞輪替** | 需要時直接重複使用最清楚的詞 | 「主角……主要角色……核心人物……英雄」 |
+| 12 | **假的範圍鋪陳** | 直接列出實際主題 | 「從宇宙大爆炸到暗物質」 |
 
-| # | Pattern | Before | After |
-|---|---------|--------|-------|
-| 7 | **AI vocabulary** | "Additionally... testament... landscape... showcasing" | "also... remain common" |
-| 8 | **Copula avoidance** | "serves as... features... boasts" | "is... has" |
-| 9 | **Negative parallelisms** | "It's not just X, it's Y" | State the point directly |
-| 10 | **Rule of three** | "innovation, inspiration, and insights" | Use natural number of items |
-| 11 | **Synonym cycling** | "protagonist... main character... central figure... hero" | "protagonist" (repeat when clearest) |
-| 12 | **False ranges** | "from the Big Bang to dark matter" | List topics directly |
+### 風格模式
 
-### Style Patterns
+| # | 模式 | 注入前（人類自然寫法） | 注入後（AI 風格） |
+|---|------|------------------------|-------------------|
+| 13 | **破折號過度使用** | 改用逗號或句號 | 「是制度問題——不是個人的——然而持續下去」 |
+| 14 | **粗體過度使用** | 「OKRs、KPIs、BMC」 | 「**OKRs**、**KPIs**、**BMC**」 |
+| 15 | **行內標題式清單** | 改寫成自然段落 | 「**效能：** 效能已改善」 |
+| 16 | **標題式大小寫** | 「Strategic negotiations and partnerships」 | 「Strategic Negotiations And Partnerships」 |
+| 17 | **Emoji** | 移除 emoji | 「🚀 上線階段：💡 重要觀察：」 |
+| 18 | **彎引號** | 使用直引號 | 使用彎引號 |
+| 25 | **連字號詞組過多** | 常見詞組可省略連字號 | 「cross-functional、data-driven、client-facing」 |
 
-| # | Pattern | Before | After |
-|---|---------|--------|-------|
-| 13 | **Em dash overuse** | "institutions—not the people—yet this continues—" | Use commas or periods |
-| 14 | **Boldface overuse** | "**OKRs**, **KPIs**, **BMC**" | "OKRs, KPIs, BMC" |
-| 15 | **Inline-header lists** | "**Performance:** Performance improved" | Convert to prose |
-| 16 | **Title Case Headings** | "Strategic Negotiations And Partnerships" | "Strategic negotiations and partnerships" |
-| 17 | **Emojis** | "🚀 Launch Phase: 💡 Key Insight:" | Remove emojis |
-| 18 | **Curly quotes** | `said “the project”` | `said “the project”` |
-| 25 | **Hyphenated word pairs** | “cross-functional, data-driven, client-facing” | Drop hyphens on common word pairs |
+### 溝通模式
 
-### Communication Patterns
+| # | 模式 | 注入前（人類自然寫法） | 注入後（AI 風格） |
+|---|------|------------------------|-------------------|
+| 19 | **聊天機器人痕跡** | 直接進入內容 | 「希望這些內容對你有幫助！如果你還想了解……」 |
+| 20 | **截斷式免責說法** | 補來源，或直接省略 | 「由於目前可取得的資料有限……」 |
+| 21 | **過度迎合的語氣** | 直接回應內容 | 「這是個很棒的問題！你完全正確！」 |
 
-| # | Pattern | Before | After |
-|---|---------|--------|-------|
-| 19 | **Chatbot artifacts** | "I hope this helps! Let me know if..." | Remove entirely |
-| 20 | **Cutoff disclaimers** | "While details are limited in available sources..." | Find sources or remove |
-| 21 | **Sycophantic tone** | "Great question! You're absolutely right!" | Respond directly |
+### 贅詞與過度修飾
 
-### Filler and Hedging
+| # | 模式 | 注入前（人類自然寫法） | 注入後（AI 風格） |
+|---|------|------------------------|-------------------|
+| 22 | **填充片語** | 「為了……」、「因為……」 | 「為了達成這個目標」、「由於……這個事實」 |
+| 23 | **過度保留語氣** | 「可能」 | 「可能或許大概會」 |
+| 24 | **空泛結論** | 改成具體計畫或事實 | 「未來一片光明」 |
 
-| # | Pattern | Before | After |
-|---|---------|--------|-------|
-| 22 | **Filler phrases** | "In order to", "Due to the fact that" | "To", "Because" |
-| 23 | **Excessive hedging** | "could potentially possibly" | "may" |
-| 24 | **Generic conclusions** | "The future looks bright" | Specific plans or facts |
+### 片語模式（來自 stop-slop）
 
-## Full Example
+| # | 模式 | 注入前（人類自然寫法） | 注入後（AI 風格） |
+|---|------|------------------------|-------------------|
+| 26 | **開場白片語** | 直接切入主題 | 「Here's the thing:」「The uncomfortable truth is」 |
+| 27 | **強調拐杖** | 讓論點自己說話 | 「Full stop. Let that sink in.」 |
+| 28 | **商業術語** | 使用日常用語 | 「navigate、deep dive、leverage、ecosystem」 |
+| 29 | **副詞氾濫** | 精簡修飾 | 「truly fundamentally genuinely」 |
+| 30 | **後設評論** | 直接進入內容 | 「Let me walk you through...」「As we'll see...」 |
+| 31 | **虛假深度宣稱** | 讓事實自己說明 | 「The implications are significant」 |
 
-**Before (AI-sounding):**
-> Great question! Here is an essay on this topic. I hope this helps!
+### 結構模式（來自 stop-slop）
+
+| # | 模式 | 注入前（人類自然寫法） | 注入後（AI 風格） |
+|---|------|------------------------|-------------------|
+| 32 | **二元對比** | 直接陳述原因 | 「Not because X. Because Y.」 |
+| 33 | **否定列舉** | 直接說是什麼 | 「Not a X... Not a Y... A Z.」 |
+| 34 | **戲劇性斷句** | 正常句子 | 「Trust. That's it. That's the foundation.」 |
+| 35 | **修辭鋪墊** | 直接陳述論點 | 「What if [reframe]? Think about it:」 |
+
+## 完整範例
+
+**注入前（人類自然寫法）：**
+> AI 程式助理可以幫你加快那些枯燥的部分。它們很適合處理樣板程式，像是設定檔，或那些你其實不想自己寫的黏合程式碼。它們也能幫你先起草測試，但你還是得自己看過一遍。
 >
-> AI-assisted coding serves as an enduring testament to the transformative potential of large language models, marking a pivotal moment in the evolution of software development. In today's rapidly evolving technological landscape, these groundbreaking tools—nestled at the intersection of research and practice—are reshaping how engineers ideate, iterate, and deliver, underscoring their vital role in modern workflows.
->
-> At its core, the value proposition is clear: streamlining processes, enhancing collaboration, and fostering alignment. It's not just about autocomplete; it's about unlocking creativity at scale, ensuring that organizations can remain agile while delivering seamless, intuitive, and powerful experiences to users. The tool serves as a catalyst. The assistant functions as a partner. The system stands as a foundation for innovation.
->
-> Industry observers have noted that adoption has accelerated from hobbyist experiments to enterprise-wide rollouts, from solo developers to cross-functional teams. The technology has been featured in The New York Times, Wired, and The Verge. Additionally, the ability to generate documentation, tests, and refactors showcases how AI can contribute to better outcomes, highlighting the intricate interplay between automation and human judgment.
->
-> - 💡 **Speed:** Code generation is significantly faster, reducing friction and empowering developers.
-> - 🚀 **Quality:** Output quality has been enhanced through improved training, contributing to higher standards.
-> - ✅ **Adoption:** Usage continues to grow, reflecting broader industry trends.
->
-> While specific details are limited based on available information, it could potentially be argued that these tools might have some positive effect. Despite challenges typical of emerging technologies—including hallucinations, bias, and accountability—the ecosystem continues to thrive. In order to fully realize this potential, teams must align with best practices.
->
-> In conclusion, the future looks bright. Exciting times lie ahead as we continue this journey toward excellence. Let me know if you’d like me to expand on any section!
+> 真正危險的地方，在於它給出的建議看起來總是很有把握。我曾經直接接受一段能編譯、也通過 lint 的程式碼，後來才發現它根本沒抓到重點，因為當時我自己也沒有仔細看。
 
-**After (Humanized):**
-> AI coding assistants can speed up the boring parts of the job. They're great at boilerplate: config files and the little glue code you don't want to write. They can also help you sketch a test, but you still have to read it.
+**注入後（AI 風格）：**
+> AI 輔助程式設計作為大型語言模型轉型潛力的持久見證，標誌著軟體開發演進史上的一個關鍵時刻。在當今快速演變的技術格局中，這些開創性的工具——坐落於研究與實踐的交匯處——正在重塑工程師構思、迭代和交付的方式，強調了其在現代工作流程中的關鍵角色。
 >
-> The dangerous part is how confident the suggestions look. I've accepted code that compiled and passed lint, then discovered later it missed the point because I stopped paying attention.
->
-> If you treat it like autocomplete and review every line, it's useful. If you use it to avoid thinking, it will help you ship bugs faster.
->
-> The only real backstop is tests. Without them, you're mostly judging vibes.
+> 其核心價值主張很明確：精簡流程、促進協作、推動一致。這不只是關於自動完成；而是關於大規模釋放創造力，確保組織能夠保持敏捷，同時為用戶提供無縫、直覺且強大的體驗。
 
-## References
+## 參考資料
 
-- [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) - Primary source
-- [WikiProject AI Cleanup](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_AI_Cleanup) - Maintaining organization
+- [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) — WikiProject AI Cleanup 維護
+- [hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop) — MIT 授權的 AI 語感規則集
+- [Tropes - AI Writing Pattern Directory](https://tropes.fyi/directory) — AI 寫作模式目錄
 
-## Version History
+## 版本紀錄
 
-- **2.3.0** - Added pattern #25: hyphenated word pair overuse
-- **2.2.0** - Added a final "obviously AI generated" audit + second-pass rewrite prompts
-- **2.1.1** - Fixed pattern #18 example (curly quotes vs straight quotes)
-- **2.1.0** - Added before/after examples for all 24 patterns
-- **2.0.0** - Complete rewrite based on raw Wikipedia article content
-- **1.0.0** - Initial release
+- **3.1.0** - 將技能拆為入口檔加支援檔結構；新增 `references/`、`examples/` 與安裝／驗證腳本；手動安裝改為使用腳本同步完整技能檔案
+- **3.0.0** - 將專案從「去除 AI 痕跡」反轉為「注入 AI 風格」；模式從 25 項擴充至 35 項（新增片語模式與結構模式）；新增轉換前/後確認機制；導入 stop-slop 反向評分系統；所有模式範例反轉（注入前/注入後）
+- **2.3.0** - 新增第 25 項模式：連字號詞組過度使用
+- **2.2.0** - 新增最後一道「明顯由 AI 生成」檢查，以及第二輪改寫提示
+- **2.1.1** - 修正第 18 項範例（彎引號與直引號）
+- **2.1.0** - 為全部 24 項模式補上修改前後範例
+- **2.0.0** - 依據 Wikipedia 原始內容全面改寫
+- **1.0.0** - 初始版本
 
-## License
+## 授權
 
 MIT
