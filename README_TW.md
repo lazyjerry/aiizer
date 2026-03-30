@@ -1,6 +1,6 @@
 [English](README.md) | [简体中文](README_CN.md) | 繁體中文 | [日本語](README_JP.md) | [한국어](README_KR.md)
 
-# aIizer
+# aiizer
 
 一個適用於 Claude Code / Copilot 的技能，用來將人類自然書寫的文字注入典型 AI 寫作風格。基於維基百科「AI 寫作特徵」與 stop-slop 規則集，涵蓋 7 大類共 35 項 AI 寫作子模式。
 
@@ -10,7 +10,7 @@
 
 ```bash
 mkdir -p ~/.claude/skills
-git clone https://github.com/lazyjerry/aIizer ~/.claude/skills/aIizer
+git clone https://github.com/lazyjerry/aiizer ~/.claude/skills/aiizer
 ```
 
 ### 從已複製的儲存庫安裝或更新
@@ -24,7 +24,7 @@ git clone https://github.com/lazyjerry/aIizer ~/.claude/skills/aIizer
 如需安裝到自訂位置，可傳入目標目錄：
 
 ```bash
-./scripts/install-skill.sh ~/.claude/skills/aIizer
+./scripts/install-skill.sh ~/.claude/skills/aiizer
 ```
 
 ### 驗證技能結構
@@ -47,7 +47,7 @@ git clone https://github.com/lazyjerry/aIizer ~/.claude/skills/aIizer
 在 Claude Code 中呼叫這個技能：
 
 ```
-/aIizer
+/aiizer
 
 [在此貼上文字]
 ```

@@ -1,6 +1,6 @@
 English | [简体中文](README_CN.md) | [繁體中文](README_TW.md) | [日本語](README_JP.md) | [한국어](README_KR.md)
 
-# aIizer
+# aiizer
 
 A skill for Claude Code / Copilot that injects typical AI-writing traits into naturally written human text. It is based on Wikipedia's Signs of AI writing and the stop-slop rule set, covering 35 AI-writing sub-patterns across 7 categories.
 
@@ -10,7 +10,7 @@ A skill for Claude Code / Copilot that injects typical AI-writing traits into na
 
 ```bash
 mkdir -p ~/.claude/skills
-git clone https://github.com/lazyjerry/aIizer ~/.claude/skills/aIizer
+git clone https://github.com/lazyjerry/aiizer ~/.claude/skills/aiizer
 ```
 
 ### Install or update from an existing cloned repository
@@ -24,7 +24,7 @@ The skill now includes supporting files and scripts, so copying only SKILL.md is
 To install into a custom location, pass the target directory:
 
 ```bash
-./scripts/install-skill.sh ~/.claude/skills/aIizer
+./scripts/install-skill.sh ~/.claude/skills/aiizer
 ```
 
 ### Validate the skill structure
@@ -47,7 +47,7 @@ To install into a custom location, pass the target directory:
 Call the skill in Claude Code:
 
 ```
-/aIizer
+/aiizer
 
 [paste text here]
 ```

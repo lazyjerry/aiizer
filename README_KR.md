@@ -1,6 +1,6 @@
 [English](README.md) | [简体中文](README_CN.md) | [繁體中文](README_TW.md) | [日本語](README_JP.md) | 한국어
 
-# aIizer
+# aiizer
 
 Claude Code / Copilot 에서 사용할 수 있는 스킬로, 사람이 자연스럽게 쓴 문장에 전형적인 AI 글쓰기 특징을 주입하는 데 사용합니다. Wikipedia 의 Signs of AI writing 과 stop-slop 규칙 세트를 바탕으로, 7 개 범주에 걸친 35 개의 AI 글쓰기 하위 패턴을 제공합니다.
 
@@ -10,7 +10,7 @@ Claude Code / Copilot 에서 사용할 수 있는 스킬로, 사람이 자연스
 
 ```bash
 mkdir -p ~/.claude/skills
-git clone https://github.com/lazyjerry/aIizer ~/.claude/skills/aIizer
+git clone https://github.com/lazyjerry/aiizer ~/.claude/skills/aiizer
 ```
 
 ### 이미 클론한 저장소에서 설치하거나 업데이트
@@ -24,7 +24,7 @@ git clone https://github.com/lazyjerry/aIizer ~/.claude/skills/aIizer
 사용자 지정 위치에 설치하려면 대상 디렉터리를 인자로 전달합니다.
 
 ```bash
-./scripts/install-skill.sh ~/.claude/skills/aIizer
+./scripts/install-skill.sh ~/.claude/skills/aiizer
 ```
 
 ### 스킬 구조 검증
@@ -47,7 +47,7 @@ git clone https://github.com/lazyjerry/aIizer ~/.claude/skills/aIizer
 Claude Code 에서 이 스킬을 호출합니다.
 
 ```
-/aIizer
+/aiizer
 
 [여기에 텍스트를 붙여 넣습니다]
 ```
